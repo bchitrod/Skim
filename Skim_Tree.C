@@ -1,4 +1,4 @@
-void Skim_Trees()
+void Skim_Tree()
 {
   cout<<2<<endl;
   char sample[100];
