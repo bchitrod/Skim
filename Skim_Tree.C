@@ -55,7 +55,7 @@ void Skim_Trees()
                   int           i = 1, evtno, iJet, nJet;
 
 
-                  sprintf(skimmedfilename,"/STORE/VHbb/regression/skim_bkg/skimmed_%s.root",sample);
+                  sprintf(skimmedfilename,"/eos/user/b/bchitrod/VHbbAnalysisNtuples/Regression_2017/skim_bkg/skimmed_%s.root",sample);
 
                   TFile   *skimmed        = new TFile(skimmedfilename,"RECREATE");
                   TTree   *data           = new TTree("Events",   "Regression");
@@ -100,12 +100,12 @@ void Skim_Trees()
                     {
                       char filename[200],nextfilename[200],secnextfilename[200];
 
-                      sprintf(filename,"/STORE/VHbb/regression/new/%s/output_%s_%d.root",sample,sample,i);
+                      sprintf(filename,"/eos/user/b/bchitrod/VHbbAnalysisNtuples/Regression_2017/%s/output_%s_%d.root",sample,sample,i);
                       ifstream    file,nextfile,secnextfile;
                       file.open(filename);
-                      sprintf(nextfilename,"/STORE/VHbb/regression/new/%s/output_%s_%d.root",sample,sample,i+1);
+                      sprintf(nextfilename,"/eos/user/b/bchitrod/VHbbAnalysisNtuples/Regression_2017/%s/output_%s_%d.root",sample,sample,i+1);
                       nextfile.open(nextfilename);
-                      sprintf(secnextfilename,"/STORE/VHbb/regression/new/%s/output_%s_%d.root",sample,sample,i+2);
+                      sprintf(secnextfilename,"/eos/user/b/bchitrod/VHbbAnalysisNtuples/Regression_2017/%s/output_%s_%d.root",sample,sample,i+2);
                       secnextfile.open(secnextfilename);
                       if(!file.is_open() && !nextfile.is_open() && !secnextfile.is_open())
                         {
