@@ -3,7 +3,7 @@ void Skim_Tree()
   cout<<2<<endl;
   char sample[100];
   ifstream        sample_list;
-  sample_list.open("samples.txt");
+  sample_list.open("sample.txt");
   cout<<1<<endl;
   TFile   *input_BR[80][500];
   TTree   *input_background[80][500];
@@ -143,7 +143,7 @@ void Skim_Tree()
                           jet2_pt         = input_background[sample_index][i]->GetLeaf("Jet_Pt")->GetValue(hJetInd2);
                           nJet            = input_background[sample_index][i]->GetLeaf("nJet")->GetValue();
 
-                          if (regression==10 && ((ele1_pt>25 && ele2_pt>25) || (muon1_pt>25 && muon2_pt>25)) && jet1_pt>25 && jet2_pt>25)
+                          if (regression==10 && (ele1_pt>25 && ele2_pt>25) && jet1_pt>25 && jet2_pt>25 && isZee==1)
                             {
                               weight          = input_background[sample_index][i]->GetLeaf("weight")->GetValue();
                               MET_Pt          = input_background[sample_index][i]->GetLeaf("MET_Pt")->GetValue();
@@ -173,58 +173,94 @@ void Skim_Tree()
                               bjet2_bRegRes   = input_background[sample_index][i]->GetLeaf("Jet_bRegRes")->GetValue(hJetInd2);
 
 
-                              if (isZee==1){
-                                lep1_pt         = input_background[sample_index][i]->GetLeaf("Electron_pt")->GetValue(lepInd1);
-                                lep1_eta        = input_background[sample_index][i]->GetLeaf("Electron_eta")->GetValue(lepInd1);
-                                lep1_mass       = input_background[sample_index][i]->GetLeaf("Electron_mass")->GetValue(lepInd1);
-                                lep1_phi        = input_background[sample_index][i]->GetLeaf("Electron_phi")->GetValue(lepInd1);
-                                lep2_pt         = input_background[sample_index][i]->GetLeaf("Electron_pt")->GetValue(lepInd2);
-                                lep2_eta        = input_background[sample_index][i]->GetLeaf("Electron_eta")->GetValue(lepInd2);
-                                lep2_mass       = input_background[sample_index][i]->GetLeaf("Electron_mass")->GetValue(lepInd2);
-                                lep2_phi        = input_background[sample_index][i]->GetLeaf("Electron_phi")->GetValue(lepInd2);
-                              }
+			      lep1_pt         = input_background[sample_index][i]->GetLeaf("Electron_pt")->GetValue(lepInd1);
+			      lep1_eta        = input_background[sample_index][i]->GetLeaf("Electron_eta")->GetValue(lepInd1);
+			      lep1_mass       = input_background[sample_index][i]->GetLeaf("Electron_mass")->GetValue(lepInd1);
+			      lep1_phi        = input_background[sample_index][i]->GetLeaf("Electron_phi")->GetValue(lepInd1);
+			      lep2_pt         = input_background[sample_index][i]->GetLeaf("Electron_pt")->GetValue(lepInd2);
+			      lep2_eta        = input_background[sample_index][i]->GetLeaf("Electron_eta")->GetValue(lepInd2);
+			      lep2_mass       = input_background[sample_index][i]->GetLeaf("Electron_mass")->GetValue(lepInd2);
+			      lep2_phi        = input_background[sample_index][i]->GetLeaf("Electron_phi")->GetValue(lepInd2);
+			      
+			      for (iJet=0; iJet<nJet; iJet++){
+				Jet_pt = input_background[sample_index][i]->GetLeaf("Jet_Pt")->GetValue(iJet);
+				if (Jet_pt > 25){
+				  Sum_Pt = Sum_Pt + Jet_pt;
+				}
+			      }
+			      fprintf(log,"\n");
 
-                              if (isZmm==1){
-                                lep1_pt         = input_background[sample_index][i]->GetLeaf("Muon_pt")->GetValue(lepInd1);
-                                lep1_eta        = input_background[sample_index][i]->GetLeaf("Muon_eta")->GetValue(lepInd1);
-                                lep1_mass       = input_background[sample_index][i]->GetLeaf("Muon_mass")->GetValue(lepInd1);
-                                lep1_phi        = input_background[sample_index][i]->GetLeaf("Muon_phi")->GetValue(lepInd1);
-                                lep2_pt         = input_background[sample_index][i]->GetLeaf("Muon_pt")->GetValue(lepInd2);
-                                lep2_eta        = input_background[sample_index][i]->GetLeaf("Muon_eta")->GetValue(lepInd2);
-                                lep2_mass       = input_background[sample_index][i]->GetLeaf("Muon_mass")->GetValue(lepInd2);
-                                lep2_phi        = input_background[sample_index][i]->GetLeaf("Muon_phi")->GetValue(lepInd2);
-                              }
-
-                              for (iJet=0; iJet<nJet; iJet++){
-                                Jet_pt = input_background[sample_index][i]->GetLeaf("Jet_Pt")->GetValue(iJet);
-                                if (Jet_pt > 25){
-                                  Sum_Pt = Sum_Pt + Jet_pt;
-                                 }
-                              }
-
-                              fprintf(log,"\n");
-
-                              data -> Fill();
-                            }
-                          Sum_Pt = 0;
-
-                        }
-
-                      input_BR[sample_index][i]->Close();
-
-                      i++;
-                      file.close();
-                      nextfile.close();
-                      secnextfile.close();
-                    }
-
-                  skimmed -> cd ();
-                  data    -> Write();
-                  skimmed -> Close();
-                }
-                sample_index ++;
+			      data -> Fill();
+			    }
+			
+			  else if (regression==10 && (muon1_pt>25 && muon2_pt>25) && jet1_pt>25 && jet2_pt>25 && isZmm==1){
+			    weight          = input_background[sample_index][i]->GetLeaf("weight")->GetValue();
+			    MET_Pt          = input_background[sample_index][i]->GetLeaf("MET_Pt")->GetValue();
+			    MET_phi         = input_background[sample_index][i]->GetLeaf("MET_phi")->GetValue();
+			    H_mass          = input_background[sample_index][i]->GetLeaf("H_mass")->GetValue();
+			    H_mass_noreg    = input_background[sample_index][i]->GetLeaf("H_mass_noreg")->GetValue();
+			    PV_npvs         = input_background[sample_index][i]->GetLeaf("PV_npvs")->GetValue();
+			    fixedGridRhoFastjetAll = input_background[sample_index][i]->GetLeaf("fixedGridRhoFastjetAll")->GetValue();
+			    Vtype           = input_background[sample_index][i]->GetLeaf("Vtype")->GetValue();
+			    bjet1_pt        = input_background[sample_index][i]->GetLeaf("Jet_Pt")->GetValue(hJetInd1);
+			    bjet1_eta       = input_background[sample_index][i]->GetLeaf("Jet_eta")->GetValue(hJetInd1);
+			    bjet1_mass      = input_background[sample_index][i]->GetLeaf("Jet_mass")->GetValue(hJetInd1);
+			    bjet1_phi       = input_background[sample_index][i]->GetLeaf("Jet_phi")->GetValue(hJetInd1);
+			    bjet1_DeepCSV   = input_background[sample_index][i]->GetLeaf("Jet_btagDeepB")->GetValue(hJetInd1);
+			    bjet1_PtReg     = input_background[sample_index][i]->GetLeaf("Jet_PtReg")->GetValue(hJetInd1);
+			    bjet1_PtRegUp   = input_background[sample_index][i]->GetLeaf("Jet_PtRegUp")->GetValue(hJetInd1);
+			    bjet1_PtRegDown = input_background[sample_index][i]->GetLeaf("Jet_PtRegDown")->GetValue(hJetInd1);
+			    bjet1_bRegRes   = input_background[sample_index][i]->GetLeaf("Jet_bRegRes")->GetValue(hJetInd1);
+			    bjet2_pt        = input_background[sample_index][i]->GetLeaf("Jet_Pt")->GetValue(hJetInd2);
+			    bjet2_eta       = input_background[sample_index][i]->GetLeaf("Jet_eta")->GetValue(hJetInd2);
+			    bjet2_mass      = input_background[sample_index][i]->GetLeaf("Jet_mass")->GetValue(hJetInd2);
+			    bjet2_phi       = input_background[sample_index][i]->GetLeaf("Jet_phi")->GetValue(hJetInd2);
+			    bjet2_DeepCSV   = input_background[sample_index][i]->GetLeaf("Jet_btagDeepB")->GetValue(hJetInd2);
+			    bjet2_PtReg     = input_background[sample_index][i]->GetLeaf("Jet_PtReg")->GetValue(hJetInd2);
+			    bjet2_PtRegUp   = input_background[sample_index][i]->GetLeaf("Jet_PtRegUp")->GetValue(hJetInd2);
+			    bjet2_PtRegDown = input_background[sample_index][i]->GetLeaf("Jet_PtRegDown")->GetValue(hJetInd2);
+			    bjet2_bRegRes   = input_background[sample_index][i]->GetLeaf("Jet_bRegRes")->GetValue(hJetInd2);
+			    
+			    lep1_pt         = input_background[sample_index][i]->GetLeaf("Muon_pt")->GetValue(lepInd1);
+			    lep1_eta        = input_background[sample_index][i]->GetLeaf("Muon_eta")->GetValue(lepInd1);
+			    lep1_mass       = input_background[sample_index][i]->GetLeaf("Muon_mass")->GetValue(lepInd1);
+			    lep1_phi        = input_background[sample_index][i]->GetLeaf("Muon_phi")->GetValue(lepInd1);
+			    lep2_pt         = input_background[sample_index][i]->GetLeaf("Muon_pt")->GetValue(lepInd2);
+			    lep2_eta        = input_background[sample_index][i]->GetLeaf("Muon_eta")->GetValue(lepInd2);
+			    lep2_mass       = input_background[sample_index][i]->GetLeaf("Muon_mass")->GetValue(lepInd2);
+			    lep2_phi        = input_background[sample_index][i]->GetLeaf("Muon_phi")->GetValue(lepInd2);
+			  
+			  
+			    for (iJet=0; iJet<nJet; iJet++){
+			      Jet_pt = input_background[sample_index][i]->GetLeaf("Jet_Pt")->GetValue(iJet);
+			      if (Jet_pt > 25){
+				Sum_Pt = Sum_Pt + Jet_pt;
+			      }
+			    }
+			  
+			    fprintf(log,"\n");
+			    
+			    data -> Fill();
+			  }
+			  Sum_Pt = 0;
+			  
+			}
+		      
+		      input_BR[sample_index][i]->Close();
+		      
+		      i++;
+		      file.close();
+		      nextfile.close();
+		      secnextfile.close();
+		    }
+		  
+		  skimmed -> cd ();
+		  data    -> Write();
+		  skimmed -> Close();
+		}
+		sample_index ++;
     }
-
+  
   fclose(log);
 
 }                  
